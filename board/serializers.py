@@ -9,7 +9,7 @@ class TaskItemSerializer(serializers.ModelSerializer):
         model = TaskItem
         # fields = ['id', 'title', 'created_at', 'checked']
         fields = '__all__'
-        # read_only_fields = '__all__' # ['user']
+        read_only_fields = ['id'] # 'user'
 
 class TaskItemViewSet(viewsets.ModelViewSet):
     serializer_class = TaskItemSerializer

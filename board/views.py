@@ -45,11 +45,12 @@ class TaskView(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        print('Received data:', request.data)
         serializer = TaskItemSerializer(data=request.data)
         if serializer.is_valid():
-            # serializer.save(user=request.user)
+            task = serializer.save()
+            print('Task created with ID:', task.id)  # Debug-Ausgabe
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print('Validation errors:', serializer.errors)  # Debug-Ausgabe
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
