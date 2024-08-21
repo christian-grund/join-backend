@@ -20,12 +20,10 @@ class TaskItem(models.Model):
         return self.taskTitle
 
 
-
-        
-
-# class Contact(models.Model):
-    #   name = 
-    #   mail =
-    #   phone =
-    #   color =
-    #   isChoosen = models.BooleanField(default=False)
+class ContactItem(models.Model):
+      name = models.CharField(max_length=100)
+      mail = models.EmailField(max_length=254)
+      phone = models.DecimalField(max_digits=20, decimal_places=0)
+      color = models.CharField(max_length=100, blank=True, null=True)
+      isChoosen = models.BooleanField(default=False)
+      nr = models.DecimalField(max_digits=100, decimal_places=0, blank=True, null=True)

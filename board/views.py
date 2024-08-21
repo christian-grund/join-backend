@@ -5,9 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework import serializers
 
-from board.models import TaskItem
-from board.serializers import TaskItemSerializer, UserSerializer
+from board.models import ContactItem, TaskItem
+from board.serializers import ContactItemSerializer, TaskItemSerializer, UserSerializer
 
 
 # Create your views here.
@@ -48,9 +49,29 @@ class TaskView(APIView):
         serializer = TaskItemSerializer(data=request.data)
         if serializer.is_valid():
             task = serializer.save()
-            print('Task created with ID:', task.id)  # Debug-Ausgabe
+            print('Task created with ID:', task.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print('Validation errors:', serializer.errors)  # Debug-Ausgabe
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+class ContactView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        # contacts = ContactItem.objects.filter(user=request.user)
+        contacts = ContactItem.objects.all()
+        serializer = ContactItemSerializer(contacts, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = ContactItemSerializer(data=request.data)
+        if serializer.is_valid():
+            contact = serializer.save()
+            print('Contact created with ID:', contact.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print('Serializer Error:', serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

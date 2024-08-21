@@ -2,7 +2,7 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 
-from board.models import TaskItem
+from board.models import ContactItem, TaskItem
 
 class TaskItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,13 +11,16 @@ class TaskItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id'] # 'user'
 
-class TaskItemViewSet(viewsets.ModelViewSet):
-    serializer_class = TaskItemSerializer
-    queryset = TaskItem.objects.all()
-    permission_classes = [] # IsAuthenticated
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
+class ContactItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactItem
+        fields = '__all__'
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'color': {'required': False},
+            'nr': {'required': False},
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):
