@@ -53,6 +53,14 @@ class TaskView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request, pk, format=None):
+        try:
+            task = TaskItem.objects.get(pk=pk)
+            task.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except TaskItem.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    
 
 class ContactView(APIView):
     authentication_classes = []
@@ -72,6 +80,11 @@ class ContactView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print('Serializer Error:', serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        try:
+            contact = ContactItem.objects.get(pk=pk)
+            contact.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ContactItem.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
