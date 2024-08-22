@@ -95,11 +95,11 @@ class ContactView(APIView):
     
     def patch(self, request, pk, format=None):
         try:
-            task = TaskItem.objects.get(pk=pk)
-        except TaskItem.DoesNotExist:
+            contact = ContactItem.objects.get(pk=pk)
+        except ContactItem.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        serializer = TaskItemSerializer(task, data=request.data, partial=True)  # Teilweises Update
+        serializer = ContactItemSerializer(contact, data=request.data, partial=True)  # Teilweises Update
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
