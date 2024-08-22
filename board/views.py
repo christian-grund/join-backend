@@ -53,6 +53,17 @@ class TaskView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def patch(self, request, pk, format=None):
+        try:
+            task = TaskItem.objects.get(pk=pk)
+            serializer = TaskItemSerializer(task, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except TaskItem.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    
     def delete(self, request, pk, format=None):
         try:
             task = TaskItem.objects.get(pk=pk)
@@ -60,6 +71,8 @@ class TaskView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except TaskItem.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+
     
 
 class ContactView(APIView):
@@ -79,6 +92,18 @@ class ContactView(APIView):
             print('Contact created with ID:', contact.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print('Serializer Error:', serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, pk, format=None):
+        try:
+            task = TaskItem.objects.get(pk=pk)
+        except TaskItem.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = TaskItemSerializer(task, data=request.data, partial=True)  # Teilweises Update
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk, format=None):
