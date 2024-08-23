@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from board.views import ContactView, TaskView, LoginView, LogoutView, SignUpView, UserListView
+from board.views import ContactView, CurrentUserView, TaskView, LoginView, LogoutView, SignUpView, UserListView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/login/', LoginView.as_view(), name='login'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
     path('api/token/', obtain_auth_token, name='api_token_auth'),
+    path('api/current_user/', CurrentUserView.as_view(), name='current_user'),
 ]

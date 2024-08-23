@@ -3,14 +3,16 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status, generics, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 from board.models import ContactItem, TaskItem
 from board.serializers import ContactItemSerializer, TaskItemSerializer, UserSerializer
+import logging
+logger = logging.getLogger(__name__)
 
 
 class SignUpView(APIView):
@@ -24,7 +26,12 @@ class SignUpView(APIView):
         if not username or not email or not password:
             return Response({"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        User.objects.create_user(
+        # Überprüfe, ob der Benutzer bereits existiert
+        if User.objects.filter(username=username).exists():
+            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verwende die create_user-Methode, um das Passwort korrekt zu hashen und zu speichern
+        user = User.objects.create_user(
             username=username,
             email=email,
             password=password
@@ -33,23 +40,37 @@ class SignUpView(APIView):
         return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
 
 
+def authenticate_user(email, password):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return None
+    return authenticate(username=user.username, password=password)
+
 class LoginView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = []
 
     def post(self, request, *args, **kwargs):
-        username = request.data.get('username')
+        email = request.data.get('email')
         password = request.data.get('password')
 
-        if not username or not password:
-            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not email or not password:
+            return Response({'error': 'Please provide both email and password'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(username=username, password=password)
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Invalid Credentials'},
+                            status=status.HTTP_401_UNAUTHORIZED)
 
-        if user is not None:
-            login(request, user)
-            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        user = authenticate(username=user.username, password=password)
+        if not user:
+            return Response({'error': 'Invalid Credentials'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
         
 
 class LogoutView(APIView):
@@ -156,3 +177,23 @@ class UserListView(APIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
+    
+
+class CurrentUserView(APIView):
+    permission_classes = []  # Sicherstellen, dass der Benutzer eingeloggt ist
+    authentication_classes = []
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        # Überprüfen, ob der Benutzer authentifiziert ist
+        if user.is_authenticated:
+            return Response({
+                "username": user.username,
+                "email": user.email,
+                # Du kannst auch andere Informationen zurückgeben, die du brauchst
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "error": "No user is logged in"
+            }, status=status.HTTP_401_UNAUTHORIZED)
