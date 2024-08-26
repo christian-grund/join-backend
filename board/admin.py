@@ -8,4 +8,5 @@ class TaskItemAdmin(admin.ModelAdmin):
 
 @admin.register(ContactItem)
 class ContactItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'mail', 'phone', 'color', 'isChoosen', 'nr') # user
+    list_display = ('id', 'name', 'mail', 'phone', 'color', 'isChoosen', 'nr') # , 'user'
+

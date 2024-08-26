@@ -26,11 +26,9 @@ class SignUpView(APIView):
         if not username or not email or not password:
             return Response({"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Überprüfe, ob der Benutzer bereits existiert
         if User.objects.filter(username=username).exists():
             return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verwende die create_user-Methode, um das Passwort korrekt zu hashen und zu speichern
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -79,11 +77,9 @@ class LogoutView(APIView):
     def post(self, request, *args, **kwargs):
         try:
             logout(request)
-            # Optionale zusätzliche Überprüfung, ob der Benutzer tatsächlich ausgeloggt ist
             if not request.user.is_authenticated:
                 return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
             else:
-                # Falls logout nicht erfolgreich war (eher ungewöhnlich)
                 return Response({"error": "Logout failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             # Allgemeine Fehlerbehandlung
@@ -131,39 +127,36 @@ class TaskView(APIView):
     
 
 class ContactView(APIView):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [TokenAuthentication] # TokenAuthentication
+    permission_classes = [IsAuthenticated] # 
 
     def get(self, request, format=None):
-        # contacts = ContactItem.objects.filter(user=request.user)
-        contacts = ContactItem.objects.all()
+        contacts = ContactItem.objects.filter(user=request.user)
         serializer = ContactItemSerializer(contacts, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = ContactItemSerializer(data=request.data)
         if serializer.is_valid():
-            contact = serializer.save()
-            print('Contact created with ID:', contact.id)
+            serializer.save(user=request.user)  # Setze den aktuellen Benutzer als Ersteller
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print('Serializer Error:', serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def patch(self, request, pk, format=None):
         try:
-            contact = ContactItem.objects.get(pk=pk)
+            contact = ContactItem.objects.get(pk=pk, user=request.user)
         except ContactItem.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = ContactItemSerializer(contact, data=request.data, partial=True)  # Teilweises Update
+
+        serializer = ContactItemSerializer(contact, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self, request, pk, format=None):
         try:
-            contact = ContactItem.objects.get(pk=pk)
+            contact = ContactItem.objects.get(pk=pk, user=request.user)
             contact.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ContactItem.DoesNotExist:

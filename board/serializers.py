@@ -16,7 +16,7 @@ class ContactItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactItem
         fields = '__all__'
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user'] # , 'user'
         extra_kwargs = {
             'color': {'required': False},
             'nr': {'required': False},
@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'id']
 
     def create(self, validated_data):
         # Passwort wird vom `create_user` automatisch gehasht
