@@ -7,16 +7,15 @@ from board.models import ContactItem, TaskItem
 class TaskItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskItem
-        # fields = ['id', 'title', 'created_at', 'checked']
         fields = '__all__'
-        read_only_fields = ['id'] # 'user'
+        read_only_fields = ['id', 'user'] 
 
 
 class ContactItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactItem
         fields = '__all__'
-        read_only_fields = ['id', 'user'] # , 'user'
+        read_only_fields = ['id', 'user']
         extra_kwargs = {
             'color': {'required': False},
             'nr': {'required': False},
@@ -31,9 +30,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'id']
 
     def create(self, validated_data):
-        # Passwort wird vom `create_user` automatisch gehasht
         return User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password']
         )
+

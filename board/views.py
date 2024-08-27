@@ -88,26 +88,26 @@ class LogoutView(APIView):
     
 
 class TaskView(APIView):
-    authentication_classes = [] # TokenAuthentication
-    permission_classes = [] # IsAuthenticated
+    authentication_classes = [TokenAuthentication] # TokenAuthentication
+    permission_classes = [IsAuthenticated] # IsAuthenticated
 
     def get(self, request, format=None):
-        # tasks = TaskItem.objects.filter(user=request.user)
-        tasks = TaskItem.objects.all()
+        tasks = TaskItem.objects.filter(user=request.user)
+        # tasks = TaskItem.objects.all()
         serializer = TaskItemSerializer(tasks, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
         serializer = TaskItemSerializer(data=request.data)
         if serializer.is_valid():
-            task = serializer.save()
+            task = serializer.save(user=request.user)
             print('Task created with ID:', task.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request, pk, format=None):
         try:
-            task = TaskItem.objects.get(pk=pk)
+            task = TaskItem.objects.get(pk=pk, user=request.user)
             serializer = TaskItemSerializer(task, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -118,7 +118,7 @@ class TaskView(APIView):
     
     def delete(self, request, pk, format=None):
         try:
-            task = TaskItem.objects.get(pk=pk)
+            task = TaskItem.objects.get(pk=pk, user=request.user)
             task.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except TaskItem.DoesNotExist:
