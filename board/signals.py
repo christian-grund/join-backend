@@ -8,12 +8,12 @@ from datetime import date, timedelta
 def create_default_contacts(sender, instance, created, **kwargs):
     if created:
         # Predefined Contacts
-        ContactItem.objects.create(user=instance, name="Anna Müller", mail="anna.mueller@example.com", phone="015123456789", isChoosen = False)
-        ContactItem.objects.create(user=instance, name="Peter Schmidt", mail="peter.schmidt@example.com", phone="017234567890", isChoosen = False)
-        ContactItem.objects.create(user=instance, name="Laura Fischer", mail="laura.fischer@example.com", phone="016345678901", isChoosen = False)
-        ContactItem.objects.create(user=instance, name="Markus Weber", mail="markus.weber@example.com", phone="017987654321", isChoosen = False)
-        ContactItem.objects.create(user=instance, name="Sabine Becker", mail="sabine.becker@example.com", phone="015678901234", isChoosen = False)
-        ContactItem.objects.create(user=instance, name="Thomas Wagner", mail="thomas.wagner@example.com", phone="016789012345", isChoosen = False)
+        ContactItem.objects.create(user=instance, name="Anna Müller", mail="anna.mueller@gmail.com", phone="+4915123456789", isChoosen = False)
+        ContactItem.objects.create(user=instance, name="Peter Schmidt", mail="peter.schmidt@web.de", phone="+4917234567890", isChoosen = False)
+        ContactItem.objects.create(user=instance, name="Laura Fischer", mail="laura.fischer@gmx.de", phone="+4916345678901", isChoosen = False)
+        ContactItem.objects.create(user=instance, name="Markus Weber", mail="markus.weber@mail.de", phone="+4917987654321", isChoosen = False)
+        ContactItem.objects.create(user=instance, name="Sabine Becker", mail="sabine.becker@freenet.de", phone="+4915678901234", isChoosen = False)
+        ContactItem.objects.create(user=instance, name="Thomas Wagner", mail="thomas.wagner@hotmail.de", phone="+4916789012345", isChoosen = False)
 
         # Predefined Tasks
         TaskItem.objects.create(
