@@ -28,7 +28,7 @@ class SignUpView(APIView):
         if User.objects.filter(username=username).exists():
             return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.create_user(
+        User.objects.create_user(
             username=username,
             email=email,
             password=password
@@ -50,6 +50,10 @@ class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
+
+        if email == "guest@web.de" and password == "Admin123":
+            # Authentifiziere den Gast-User
+            user = authenticate(username='guest', password='Admin123')
 
         if not email or not password:
             return Response({'error': 'Please provide both email and password'},
@@ -97,7 +101,7 @@ class TaskView(APIView):
     def post(self, request, format=None):
         serializer = TaskItemSerializer(data=request.data)
         if serializer.is_valid():
-            task = serializer.save(user=request.user)
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
