@@ -1,5 +1,4 @@
-from rest_framework import serializers, viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from board.models import ContactItem, TaskItem

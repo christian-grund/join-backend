@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, generics, serializers
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -82,18 +81,16 @@ class LogoutView(APIView):
             else:
                 return Response({"error": "Logout failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            # Allgemeine Fehlerbehandlung
             print(f'Logout failed: {e}')
             return Response({"error": "Logout failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 class TaskView(APIView):
-    authentication_classes = [TokenAuthentication] # TokenAuthentication
-    permission_classes = [IsAuthenticated] # IsAuthenticated
+    authentication_classes = [TokenAuthentication] 
+    permission_classes = [IsAuthenticated] 
 
     def get(self, request, format=None):
         tasks = TaskItem.objects.filter(user=request.user)
-        # tasks = TaskItem.objects.all()
         serializer = TaskItemSerializer(tasks, many=True)
         return Response(serializer.data)
     
@@ -101,7 +98,6 @@ class TaskView(APIView):
         serializer = TaskItemSerializer(data=request.data)
         if serializer.is_valid():
             task = serializer.save(user=request.user)
-            print('Task created with ID:', task.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -127,8 +123,8 @@ class TaskView(APIView):
     
 
 class ContactView(APIView):
-    authentication_classes = [TokenAuthentication] # TokenAuthentication
-    permission_classes = [IsAuthenticated] # 
+    authentication_classes = [TokenAuthentication] 
+    permission_classes = [IsAuthenticated] 
 
     def get(self, request, format=None):
         contacts = ContactItem.objects.filter(user=request.user)
@@ -138,7 +134,7 @@ class ContactView(APIView):
     def post(self, request, format=None):
         serializer = ContactItemSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)  # Setze den aktuellen Benutzer als Ersteller
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -164,7 +160,7 @@ class ContactView(APIView):
 
 
 class UserListView(APIView):
-    permission_classes = [] #IsAuthenticated
+    permission_classes = [] 
 
     def get(self, request, *args, **kwargs):
         users = User.objects.all()
@@ -173,18 +169,16 @@ class UserListView(APIView):
     
 
 class CurrentUserView(APIView):
-    permission_classes = []  # Sicherstellen, dass der Benutzer eingeloggt ist
+    permission_classes = []  
     authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         user = request.user
 
-        # Überprüfen, ob der Benutzer authentifiziert ist
         if user.is_authenticated:
             return Response({
                 "username": user.username,
                 "email": user.email,
-                # Du kannst auch andere Informationen zurückgeben, die du brauchst
             }, status=status.HTTP_200_OK)
         else:
             return Response({

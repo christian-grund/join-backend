@@ -7,7 +7,6 @@ from datetime import date, timedelta
 @receiver(post_save, sender=User)
 def create_default_contacts(sender, instance, created, **kwargs):
     if created:
-        # Predefined Contacts
         ContactItem.objects.create(user=instance, name="Anna Müller", mail="anna.mueller@gmail.com", phone="+4915123456789", isChoosen = False)
         ContactItem.objects.create(user=instance, name="Peter Schmidt", mail="peter.schmidt@web.de", phone="+4917234567890", isChoosen = False)
         ContactItem.objects.create(user=instance, name="Laura Fischer", mail="laura.fischer@gmx.de", phone="+4916345678901", isChoosen = False)
@@ -15,7 +14,6 @@ def create_default_contacts(sender, instance, created, **kwargs):
         ContactItem.objects.create(user=instance, name="Sabine Becker", mail="sabine.becker@freenet.de", phone="+4915678901234", isChoosen = False)
         ContactItem.objects.create(user=instance, name="Thomas Wagner", mail="thomas.wagner@hotmail.de", phone="+4916789012345", isChoosen = False)
 
-        # Predefined Tasks
         TaskItem.objects.create(
             user=instance,
             taskTitle="Design Homepage Layout",
@@ -127,5 +125,3 @@ def create_default_contacts(sender, instance, created, **kwargs):
             ],
             currentState="done"
         )
-
-        
