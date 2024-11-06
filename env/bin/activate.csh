@@ -9,7 +9,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/Users/christian/Documents/Developer Akademie/Backend/Modul 6/Join with Backend/joinbackend/env"
+setenv VIRTUAL_ENV "/Users/christian/Documents/Developer Akademie/Backend/07 - DRF Authentication & Permissions/Join with Backend/joinbackend/env"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"

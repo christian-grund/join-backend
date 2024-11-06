@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/christian/Documents/Developer Akademie/Backend/Modul 6/Join with Backend/joinbackend/env"
+set -gx VIRTUAL_ENV "/Users/christian/Documents/Developer Akademie/Backend/07 - DRF Authentication & Permissions/Join with Backend/joinbackend/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
