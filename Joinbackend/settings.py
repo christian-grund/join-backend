@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-jmja)c%g-ci&s$b7kty1afv%ke1v)*-p!1h2*hijypa-#=tt)!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'join-backend.christian-grund.dev'
+]
 
 
 # Application definition
