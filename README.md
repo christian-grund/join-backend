@@ -13,6 +13,13 @@ Join backend is the server-side application that powers the Join frontend. Built
 -   **Database Storage**: Tasks, users, and contacts are stored and managed in a relational database.
 -   **API Endpoints**: RESTful API to handle task and user operations.
 
+## Tech Stack
+
+-   **Python**: The primary programming language.
+-   **Django**: The web framework used to build the backend.
+-   **SQLite**: The database used to store application data (ensure it's set up correctly).
+-   **Django REST Framework**: For building RESTful APIs.
+
 ## Installation
 
 To run the project locally, follow these steps:
@@ -63,13 +70,6 @@ To run the project locally, follow these steps:
     ```
 
 8. The backend will be accessible at `http://localhost:8000/` or `http://127.0.0.1:8000/`.
-
-## Tech Stack
-
--   **Python**: The primary programming language.
--   **Django**: The web framework used to build the backend.
--   **SQLite**: The database used to store application data (ensure it's set up correctly).
--   **Django REST Framework**: For building RESTful APIs.
 
 ## Usage
 
