@@ -160,13 +160,8 @@ REST_FRAMEWORK = {
 
 sentry_sdk.init(
     dsn="https://bd3db118648de5a86921048d1118d72e@o4508325275303936.ingest.de.sentry.io/4508325590335568",
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for tracing.
     traces_sample_rate=1.0,
     _experiments={
-        # Set continuous_profiling_auto_start to True
-        # to automatically start the profiler on when
-        # possible.
         "continuous_profiling_auto_start": True,
     },
 )
