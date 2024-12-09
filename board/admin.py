@@ -6,14 +6,15 @@ from board.models import ContactItem, TaskItem
 
 @admin.register(TaskItem)
 class TaskItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'taskTitle', 'taskDescription', 'taskDueDate', 'selectedCategory', 'prio', 'currentState')  # user
+    list_display = ('id', 'taskTitle', 'taskDescription', 'taskDueDate', 'selectedCategory', 'prio', 'currentState')  
 
 @admin.register(ContactItem)
 class ContactItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'mail', 'phone', 'color', 'isChoosen', 'nr') # , 'user'
+    list_display = ('id', 'name', 'mail', 'phone', 'color', 'isChoosen', 'nr') 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('id', 'username', 'email', 'is_staff', 'is_active')
+    list_display = ('id', 'username', 'email', 'date_joined') 
+    ordering = ('-date_joined',)
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
