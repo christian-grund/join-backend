@@ -44,6 +44,7 @@ def authenticate_user(email, password):
         return None
     return authenticate(username=user.username, password=password)
 
+
 class LoginView(APIView):
     permission_classes = []
 
@@ -51,13 +52,20 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        if email == "guest@web.de" and password == "Admin123":
-            # Authentifiziere den Gast-User
-            user = authenticate(username='guest', password='Admin123')
-
         if not email or not password:
             return Response({'error': 'Please provide both email and password'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+        if email == "guest@web.de" and password == "Admin123":
+            user = User.objects.filter(username='guest').first()
+            if user:
+                token, _ = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Guest account not found'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+
 
         try:
             user = User.objects.get(email=email)
@@ -70,8 +78,9 @@ class LoginView(APIView):
             return Response({'error': 'Invalid Credentials'},
                             status=status.HTTP_401_UNAUTHORIZED)
 
-        token, created = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
+
         
 
 class LogoutView(APIView):
