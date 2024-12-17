@@ -13,6 +13,8 @@ from board.serializers import ContactItemSerializer, TaskItemSerializer, UserSer
 import logging
 logger = logging.getLogger(__name__)
 
+GUEST_TOKEN = '7f3e5d1cb09239ddf207e59c3e48d38ec157f7f4'
+
 
 class SignUpView(APIView):
     permission_classes = [AllowAny]
@@ -57,14 +59,9 @@ class LoginView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
+        
         if email == "guest@web.de" and password == "Admin123":
-            user = User.objects.filter(username='guest').first()
-            if user:
-                token, _ = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key}, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': 'Guest account not found'},
-                                status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'token': GUEST_TOKEN}, status=status.HTTP_200_OK)
 
 
         try:
